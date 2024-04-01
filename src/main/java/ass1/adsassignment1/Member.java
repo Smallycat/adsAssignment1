@@ -6,28 +6,36 @@ package ass1.adsassignment1;
 
 /**
  *
- * @author jacks
+ * @author jacks 01/04/2024 Member.java
+ *
  */
 import java.io.*;
 
 public class Member implements Serializable {
-    private String name;
+
+    private String firstName;
+    private String lastName;
     private String address;
     private String phoneNumber;
 
-    // Constructor, getters, and setters
-
+    // Constructors
     public Member() {
     }
 
-    public Member(String name, String address, String phoneNumber) {
-        this.name = name;
+    public Member(String firstName, String lastName, String address, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.address = address;
         this.phoneNumber = phoneNumber;
     }
 
-    public String getName() {
-        return name;
+    //Getters
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public String getAddress() {
@@ -38,8 +46,13 @@ public class Member implements Serializable {
         return phoneNumber;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    //Setters
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public void setAddress(String address) {
@@ -49,32 +62,35 @@ public class Member implements Serializable {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-    
-    
 
-    // Other methods
-
-    // Serialization method
-    public void serialize(String filename) {
+    //Serialisation
+    public void serialise(String filename) {
         try {
             FileOutputStream fileOut = new FileOutputStream(filename);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(this);
             out.close();
             fileOut.close();
-            System.out.println("Serialization successful. Object saved in " + filename);
+            System.out.println("Serialisation successful. Object saved in " + filename);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
-    // Deserialization method
-    public static Member deserialize(String filename) {
+
+    //Deserialisation
+    public static Member deserialise(String filename) {
         Member member = null;
         try {
             FileInputStream fileIn = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            member = (Member) in.readObject();
+            while (true) {
+                try {
+                    member = (Member) in.readObject();
+                } catch (EOFException e) {
+                    // Reached end of file
+                    break;
+                }
+            }
             in.close();
             fileIn.close();
         } catch (IOException | ClassNotFoundException e) {
