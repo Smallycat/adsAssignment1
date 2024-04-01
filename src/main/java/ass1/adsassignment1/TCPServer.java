@@ -15,6 +15,8 @@ import java.util.TimerTask;
 
 public class TCPServer {
     public static void main(String[] args) {
+        System.out.println("Current working directory: " + System.getProperty("user.dir"));
+
         try {
             ServerSocket serverSocket = new ServerSocket(1111); // Port for TCP connection
             System.out.println("Server started. Waiting for clients...");
@@ -65,32 +67,45 @@ public class TCPServer {
     
 
     static class ClientHandler implements Runnable {
-        private Socket clientSocket;
+    private Socket clientSocket;
 
-        public ClientHandler(Socket socket) {
-            this.clientSocket = socket;
-        }
+    public ClientHandler(Socket socket) {
+        this.clientSocket = socket;
+    }
 
-        public void run() {
-            try {
-                BufferedReader inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                DataOutputStream outToClient = new DataOutputStream(clientSocket.getOutputStream());
+    public void run() {
+        try {
+            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            DataOutputStream outToClient = new DataOutputStream(clientSocket.getOutputStream());
 
-                // Read member details from client
-                String details = inFromClient.readLine();
-                // Save member details to file "memberlist.txt"
-                FileWriter fileWriter = new FileWriter("memberlist.txt", true);
-                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                bufferedWriter.write(details + "\n");
-                bufferedWriter.close();
+            // Read member details from client
+            String details = inFromClient.readLine();
+            
+            // Split member details into separate components
+            String[] memberDetails = details.split(",");
 
-                // Send feedback to client
-                outToClient.writeUTF("Member details saved successfully!");
-                outToClient.flush();
+            // Assuming the correct format is provided
+            String firstName = memberDetails[0];
+            String lastName = memberDetails[1];
+            String address = memberDetails[2];
+            String phoneNumber = memberDetails[3];
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // Save member details to file "memberlist.txt"
+            FileWriter fileWriter = new FileWriter("memberlist.txt", true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write("First Name: " + firstName + "\n");
+            bufferedWriter.write("Last Name: " + lastName + "\n");
+            bufferedWriter.write("Address: " + address + "\n");
+            bufferedWriter.write("Phone Number: " + phoneNumber + "\n");
+            bufferedWriter.close();
+
+            // Send feedback to client
+            outToClient.writeUTF("Member details saved successfully!");
+            outToClient.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+}
 }

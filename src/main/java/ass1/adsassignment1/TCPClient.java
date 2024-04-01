@@ -20,8 +20,20 @@ public class TCPClient {
 
             while (true) {
                 // Get member details from user
-                System.out.println("Enter member details:");
-                String details = inFromUser.readLine();
+                System.out.println("Enter first name:");
+                String firstName = inFromUser.readLine();
+                
+                System.out.println("Enter last name:");
+                String lastName = inFromUser.readLine();
+
+                System.out.println("Enter home address:");
+                String address = inFromUser.readLine();
+
+                System.out.println("Enter phone number:");
+                String phoneNumber = inFromUser.readLine();
+
+                // Concatenate member details
+                String details = firstName + "," + lastName + "," + address + "," + phoneNumber;
 
                 // Send member details to server
                 outToServer.writeUTF(details);
